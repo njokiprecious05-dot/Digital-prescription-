@@ -1,0 +1,20 @@
+{% extends "base.html" %}{% block content %}
+<h1>Register patient</h1>
+<form method="post" class="card" data-validate>
+  <label>Full name *</label><input name="full_name" value="{{ form.full_name or '' }}" required>
+  <div class="row">
+    <div><label>Date of birth *</label><input type="date" name="date_of_birth" value="{{ form.date_of_birth or '' }}" required></div>
+    <div><label>Gender *</label><select name="gender" required>
+      <option value="">Select…</option>
+      {% for gnd in ['Female','Male','Other'] %}<option {% if form.gender == gnd %}selected{% endif %}>{{ gnd }}</option>{% endfor %}
+    </select></div>
+  </div>
+  <div class="row">
+    <div><label>Phone</label><input name="phone" value="{{ form.phone or '' }}"></div>
+    <div><label>Address</label><input name="address" value="{{ form.address or '' }}"></div>
+  </div>
+  <label>Known allergies</label><textarea name="allergies" rows="2">{{ form.allergies or '' }}</textarea>
+  {% if needs_confirm %}<label class="check"><input type="checkbox" name="confirm" value="1"> I confirm this is a different patient</label>{% endif %}
+  <p><button class="btn">Save patient</button> <a class="btn light" href="{{ url_for('patients') }}">Cancel</a></p>
+</form>
+{% endblock %}

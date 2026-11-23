@@ -1,0 +1,18 @@
+{% extends "base.html" %}{% block content %}
+<h1>Dashboard</h1>
+<div class="grid">
+  <div class="stat"><b>{{ stats.patients }}</b><span>Registered patients</span></div>
+  <div class="stat"><b>{{ stats.prescriptions }}</b><span>Total prescriptions</span></div>
+  <div class="stat"><b>{{ stats.active }}</b><span>Active prescriptions</span></div>
+  <div class="stat"><b>{{ stats.today }}</b><span>Issued today</span></div>
+</div>
+<h2>Recent prescriptions</h2>
+<table>
+  <tr><th>Rx ID</th><th>Patient</th><th>Medicine</th><th>Date</th><th>Status</th></tr>
+  {% for r in recent %}
+  <tr><td><a href="{{ url_for('prescription_detail', rx_code=r.rx_code) }}">{{ r.rx_code }}</a></td>
+      <td>{{ r.patient_name }} ({{ r.patient_code }})</td><td>{{ r.medicine }} {{ r.strength }}</td>
+      <td>{{ r.created_at[:10] }}</td><td><span class="badge {{ r.status }}">{{ r.status }}</span></td></tr>
+  {% else %}<tr><td colspan="5" class="muted">No prescriptions yet.</td></tr>{% endfor %}
+</table>
+{% endblock %}

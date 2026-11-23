@@ -1,0 +1,29 @@
+{% extends "base.html" %}{% block content %}
+<h1>Prescription {{ rx.rx_code }} <span class="badge {{ rx.status }}">{{ rx.status }}</span></h1>
+<div class="card">
+  <dl>
+    <dt>Patient</dt><dd><a href="{{ url_for('patient_detail', code=rx.patient_code) }}">{{ rx.patient_name }} ({{ rx.patient_code }})</a></dd>
+    <dt>Allergies</dt><dd class="{{ 'alert' if rx.allergies }}">{{ rx.allergies or 'None recorded' }}</dd>
+    <dt>Medicine</dt><dd>{{ rx.medicine }} {{ rx.strength }}</dd>
+    <dt>Dosage</dt><dd>{{ rx.dosage }}, {{ rx.frequency }} for {{ rx.duration }}</dd>
+    <dt>Quantity</dt><dd>{{ rx.quantity }}</dd>
+    <dt>Instructions</dt><dd>{{ rx.instructions or '—' }}</dd>
+    <dt>Prescribed by</dt><dd>{{ rx.prescriber }}</dd>
+    <dt>Date</dt><dd>{{ rx.created_at }}</dd>
+    {% if rx.updated_at %}<dt>Last updated</dt><dd>{{ rx.updated_at }}</dd>{% endif %}
+  </dl>
+</div>
+{% if rx.status == 'Active' %}
+  {% if current_role in ('doctor','admin') %}
+  <p><a class="btn light" href="{{ url_for('edit_prescription', rx_code=rx.rx_code) }}">Edit prescription</a></p>
+  {% endif %}
+  {% if current_role == 'pharmacist' %}
+  <form method="post" action="{{ url_for('update_status', rx_code=rx.rx_code) }}" data-confirm="Mark this prescription as dispensed?">
+    <input type="hidden" name="status" value="Dispensed"><button class="btn">Mark as dispensed</button></form>
+  {% elif current_role in ('doctor','admin') %}
+  <form method="post" action="{{ url_for('update_status', rx_code=rx.rx_code) }}" data-confirm="Cancel this prescription?">
+    <input type="hidden" name="status" value="Cancelled"><button class="btn danger">Cancel prescription</button></form>
+  {% endif %}
+{% endif %}
+<p><button class="btn light" onclick="window.print()">Print</button></p>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}{% block content %}
+<h1>{{ patient.full_name }} <span class="muted">{{ patient.patient_code }}</span></h1>
+<div class="card">
+  <dl>
+    <dt>Date of birth</dt><dd>{{ patient.date_of_birth }} ({{ patient.date_of_birth|age }} years)</dd>
+    <dt>Gender</dt><dd>{{ patient.gender }}</dd>
+    <dt>Phone</dt><dd>{{ patient.phone or '—' }}</dd>
+    <dt>Address</dt><dd>{{ patient.address or '—' }}</dd>
+    <dt>Allergies</dt><dd class="{{ 'alert' if patient.allergies }}">{{ patient.allergies or 'None recorded' }}</dd>
+  </dl>
+</div>
+<div class="toolbar"><h2 style="margin:0;flex:1">Prescription history</h2>
+  {% if current_role == 'doctor' %}<a class="btn" href="{{ url_for('new_prescription', code=patient.patient_code) }}">New prescription</a>{% endif %}
+</div>
+<table>
+  <tr><th>Rx ID</th><th>Medicine</th><th>Dosage</th><th>Prescriber</th><th>Date</th><th>Status</th></tr>
+  {% for r in prescriptions %}
+  <tr><td><a href="{{ url_for('prescription_detail', rx_code=r.rx_code) }}">{{ r.rx_code }}</a></td>
+      <td>{{ r.medicine }} {{ r.strength }}</td><td>{{ r.dosage }}, {{ r.frequency }}</td>
+      <td>{{ r.prescriber }}</td><td>{{ r.created_at[:10] }}</td><td><span class="badge {{ r.status }}">{{ r.status }}</span></td></tr>
+  {% else %}<tr><td colspan="6" class="muted">No prescriptions for this patient.</td></tr>{% endfor %}
+</table>
+{% endblock %}

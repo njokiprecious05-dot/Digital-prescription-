@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% block content %}
+<h1>{% if editing %}Edit prescription {{ rx_code }}{% else %}New prescription{% endif %}</h1>
+<p>Patient: <b>{{ patient.full_name }}</b> ({{ patient.patient_code }})
+{% if patient.allergies %}<br><span class="alert">Allergies: {{ patient.allergies }}</span>{% endif %}</p>
+<form method="post" class="card" data-validate>
+  <div class="row">
+    <div><label>Medicine *</label><input name="medicine" value="{{ form.medicine or '' }}" required></div>
+    <div><label>Strength *</label><input name="strength" placeholder="e.g. 500 mg" value="{{ form.strength or '' }}" required></div>
+  </div>
+  <div class="row">
+    <div><label>Dosage *</label><input name="dosage" placeholder="e.g. 1 tablet" value="{{ form.dosage or '' }}" required></div>
+    <div><label>Frequency *</label><input name="frequency" placeholder="e.g. 3 times daily" value="{{ form.frequency or '' }}" required></div>
+  </div>
+  <div class="row">
+    <div><label>Duration *</label><input name="duration" placeholder="e.g. 5 days" value="{{ form.duration or '' }}" required></div>
+    <div><label>Quantity *</label><input type="number" min="1" name="quantity" value="{{ form.quantity or '' }}" required></div>
+  </div>
+  <label>Additional instructions</label><textarea name="instructions" rows="2">{{ form.instructions or '' }}</textarea>
+  {% if needs_confirm %}<label class="check"><input type="checkbox" name="confirm" value="1"> I have reviewed the possible duplicate and want to save</label>{% endif %}
+  <p><button class="btn">{% if editing %}Save changes{% else %}Save prescription{% endif %}</button> <a class="btn light" href="{{ url_for('prescription_detail', rx_code=rx_code) if editing else url_for('patient_detail', code=patient.patient_code) }}">Cancel</a></p>
+</form>
+{% endblock %}

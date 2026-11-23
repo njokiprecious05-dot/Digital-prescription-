@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% block content %}
+<h1>Patients</h1>
+<form class="toolbar">
+  <input name="q" value="{{ q }}" placeholder="Search by patient ID, name or phone">
+  <button class="btn light">Search</button>
+  {% if current_role in ('admin','clerk','doctor') %}<a class="btn" href="{{ url_for('new_patient') }}">Register patient</a>{% endif %}
+</form>
+<table>
+  <tr><th>Patient ID</th><th>Name</th><th>Age</th><th>Gender</th><th>Phone</th>{% if current_role == 'admin' %}<th>Actions</th>{% endif %}</tr>
+  {% for p in patients %}
+  <tr><td><a href="{{ url_for('patient_detail', code=p.patient_code) }}">{{ p.patient_code }}</a></td>
+      <td>{{ p.full_name }}</td><td>{{ p.date_of_birth|age }}</td><td>{{ p.gender }}</td><td>{{ p.phone or '' }}</td>
+      {% if current_role == 'admin' %}<td><form method="post" action="{{ url_for('delete_patient', code=p.patient_code) }}" data-confirm="Delete patient {{ p.patient_code }}? Patients with prescriptions cannot be deleted."><button class="btn danger" type="submit">Delete</button></form></td>{% endif %}</tr>
+  {% else %}<tr><td colspan="{{ 6 if current_role == 'admin' else 5 }}" class="muted">No patients found.</td></tr>{% endfor %}
+</table>
+{% endblock %}

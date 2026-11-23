@@ -1,0 +1,18 @@
+{% extends "base.html" %}{% block content %}
+<h1>Prescriptions</h1>
+<form class="toolbar">
+  <input name="q" value="{{ q }}" placeholder="Search by Rx ID, patient ID, patient name or medicine">
+  <select name="status"><option value="">All statuses</option>
+    {% for s in ['Active','Dispensed','Cancelled'] %}<option {% if status == s %}selected{% endif %}>{{ s }}</option>{% endfor %}
+  </select>
+  <button class="btn light">Search</button>
+</form>
+<table>
+  <tr><th>Rx ID</th><th>Patient</th><th>Medicine</th><th>Prescriber</th><th>Date</th><th>Status</th></tr>
+  {% for r in prescriptions %}
+  <tr><td><a href="{{ url_for('prescription_detail', rx_code=r.rx_code) }}">{{ r.rx_code }}</a></td>
+      <td>{{ r.patient_name }} ({{ r.patient_code }})</td><td>{{ r.medicine }} {{ r.strength }}</td>
+      <td>{{ r.prescriber }}</td><td>{{ r.created_at[:10] }}</td><td><span class="badge {{ r.status }}">{{ r.status }}</span></td></tr>
+  {% else %}<tr><td colspan="6" class="muted">No prescriptions found.</td></tr>{% endfor %}
+</table>
+{% endblock %}

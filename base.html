@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Digital Prescription Management System{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<script src="{{ url_for('static', filename='app.js') }}" defer></script>
+</head>
+<body>
+{% if current_role %}
+<nav class="nav">
+  <span class="brand">Digital Prescription Management System</span>
+  <a href="{{ url_for('dashboard') }}">Dashboard</a>
+  <a href="{{ url_for('patients') }}">Patients</a>
+  <a href="{{ url_for('prescriptions') }}">Prescriptions</a>
+  {% if current_role == 'admin' %}<a href="{{ url_for('users') }}">Users</a><a href="{{ url_for('audit') }}">Audit log</a>{% endif %}
+  <span class="who">{{ current_name }} ({{ current_role }})</span>
+  <a href="{{ url_for('logout') }}">Log out</a>
+</nav>
+{% endif %}
+<main>
+  {% for cat, msg in get_flashed_messages(with_categories=true) %}<div class="flash {{ cat }}">{{ msg }}</div>{% endfor %}
+  {% block content %}{% endblock %}
+</main>
+</body>
+</html>
